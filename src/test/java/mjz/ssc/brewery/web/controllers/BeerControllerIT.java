@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -51,10 +52,21 @@ public class BeerControllerIT {
                 .build();
     }
 
+    //we use this method for testing the security logic
     @WithMockUser("springuser") // we can use any name for the user
     @Test
     void findBeersTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/beers/find"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    //testing both security logic and authentication logic
+    @Test
+    void findBeersWithHttpBasicTest() throws Exception {
+        //testing with http basic authentication
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/find").with(httpBasic("springuser", "springpass"))) // here we have to use the username and password we set in app.properties
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
