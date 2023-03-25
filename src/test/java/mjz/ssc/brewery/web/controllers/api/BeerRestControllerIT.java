@@ -9,6 +9,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @WebMvcTest
 public class BeerRestControllerIT extends BaseIT {
 
+    //testing the filter (not the memory store)
+    @Test
+    void deleteBeerTest() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
+                .header("Api-Key", "springuser").header("Api-Secret", "springpass"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
     @Test
     void findBeers() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/"))
