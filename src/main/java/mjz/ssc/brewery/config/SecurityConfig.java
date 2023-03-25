@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -18,10 +19,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
-        return NoOpPasswordEncoder.getInstance();
-    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -38,6 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
     }
 
+    @Bean
+    PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
+        //return NoOpPasswordEncoder.getInstance();
+        return new LdapShaPasswordEncoder();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -47,7 +51,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles("ADMIN")
                 .and() // we can add users in separate auth.inMemoryAuthentication calls or just use .and()
                 .withUser("user")
-                .password("pass") // by adding the passewordEncoder method (Bean), we can remove {noop}
+                .password("{SSHA}ikS5HECYlHYK8K4QWFIBzIhOCCxWM8LXOn3rjA==") // for Ldap we use the hashed password
+                //.password("pass") // by adding the passewordEncoder method (Bean), we can remove {noop}
                 //.password("{noop}pass")
                 .roles("USER");
 

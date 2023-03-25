@@ -1,13 +1,27 @@
 package mjz.ssc.brewery.web.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.DigestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class PasswordEncodingTests {
 
-    private final String PASSWORD = "password";
+    private final String PASSWORD = "pass";
+
+    @Test
+    void testLdap() {
+        PasswordEncoder ldap = new LdapShaPasswordEncoder();
+        System.out.println(ldap.encode(PASSWORD));
+        System.out.println(ldap.encode(PASSWORD));
+
+        String encodedPwd = ldap.encode(PASSWORD);
+        assertTrue(ldap.matches(PASSWORD, encodedPwd));
+
+    }
 
     @Test
     void testNoOp() {
