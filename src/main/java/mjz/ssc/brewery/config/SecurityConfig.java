@@ -10,11 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
+        return NoOpPasswordEncoder.getInstance();
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -35,13 +42,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("springuser")
-                .password("{noop}springpass") // we have to define a password encoder for spring security, otherwise we get error (There is no PasswordEncoder mapped for id "null"), here we use the {noop} password encoder
+                .password("springpass") // by adding the passewordEncoder method (Bean), we can remove {noop}
+                //.password("{noop}springpass") // we have to define a password encoder for spring security, otherwise we get error (There is no PasswordEncoder mapped for id "null"), here we use the {noop} password encoder
                 .roles("ADMIN")
                 .and() // we can add users in separate auth.inMemoryAuthentication calls or just use .and()
                 .withUser("user")
-                .password("{noop}pass")
+                .password("pass") // by adding the passewordEncoder method (Bean), we can remove {noop}
+                //.password("{noop}pass")
                 .roles("USER");
 
+        auth.inMemoryAuthentication().withUser("ali").password("test").roles("CUSTOMER");
         //auth.inMemoryAuthentication().withUser("springuser").password("springpass").roles("ADMIN");
         //auth.inMemoryAuthentication().withUser("user").password("pass").roles("USER");
     }
