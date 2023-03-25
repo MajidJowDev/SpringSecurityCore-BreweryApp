@@ -61,6 +61,22 @@ public class BeerControllerIT {
                 .andExpect(model().attributeExists("beer"));
     }
 
+    @Test
+    void initCreationFormWithSpringUser() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/new").with(httpBasic("springuser", "springpass")))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
+    @Test
+    void initCreationFormWithAli() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/beers/new").with(httpBasic("ali", "test")))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(view().name("beers/createBeer"))
+                .andExpect(model().attributeExists("beer"));
+    }
+
     //we use this method for testing the security logic
     @WithMockUser("springuser") // we can use any name for the user
     @Test

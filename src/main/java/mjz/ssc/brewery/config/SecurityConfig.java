@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,26 +44,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //return NoOpPasswordEncoder.getInstance();
         //return new LdapShaPasswordEncoder();
         //return new StandardPasswordEncoder(); // Sha256
-        return new BCryptPasswordEncoder();
+        //return new BCryptPasswordEncoder();
+
+        // we can use Delegating Password encoder to use different password encoding methods
+        // This way we can set a key for passowrds, so we can tell spring which encoding is going to work for each specific user
+        //we can also define our algorithm for encoding
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("springuser")
-                .password("springpass") // by adding the passewordEncoder method (Bean), we can remove {noop}
+                .password("{bcrypt}$2a$10$v6y.4QbNQs49v1pqa6SHIOEvbq6jwOtnzg7jkQjCXa3zAGQr38bky") // we set the {bcrypt} as prefix from Password encoder factories Id
+                //.password("springpass") // by adding the passewordEncoder method (Bean), we can remove {noop}
                 //.password("{noop}springpass") // we have to define a password encoder for spring security, otherwise we get error (There is no PasswordEncoder mapped for id "null"), here we use the {noop} password encoder
                 .roles("ADMIN")
                 .and() // we can add users in separate auth.inMemoryAuthentication calls or just use .and()
                 .withUser("user")
-                .password("$2a$10$9UsFcx6z3Lv0YHtdLyhgCuT9JrL9W/tMrThFU/RZMQz7ngjqopRiO")
+                .password("{sha256}918dd5d9b6614a1f589c39fc46662b097e820106d2288bd137f5f7e8d90186c1a861e21c263568b4") //we set the {sha256} as prefix from password encoder factories id
                 //.password("11419772f752d13497f2c5f7b3b98a2fc3def9e154c33099d8111da57c3ba32f6a22e182977c58c9") // Sha256
                 //.password("{SSHA}ikS5HECYlHYK8K4QWFIBzIhOCCxWM8LXOn3rjA==") // for Ldap we use the hashed password
                 //.password("pass") // by adding the passewordEncoder method (Bean), we can remove {noop}
                 //.password("{noop}pass")
                 .roles("USER");
 
-        auth.inMemoryAuthentication().withUser("ali").password("test").roles("CUSTOMER");
+        auth.inMemoryAuthentication().withUser("ali").password("{ldap}{SSHA}A9Ls+OphDd6LhsUuMvtEm/f0UObWwmY+DsNxOQ==").roles("CUSTOMER"); //we set the {ldap} as prefix from password encoder factories id
         //auth.inMemoryAuthentication().withUser("springuser").password("springpass").roles("ADMIN");
         //auth.inMemoryAuthentication().withUser("user").password("pass").roles("USER");
     }
