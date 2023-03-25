@@ -1,5 +1,6 @@
 package mjz.ssc.brewery.config;
 
+import mjz.ssc.brewery.security.SfgPasswordEncoderFactories;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -49,7 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // we can use Delegating Password encoder to use different password encoding methods
         // This way we can set a key for passowrds, so we can tell spring which encoding is going to work for each specific user
         //we can also define our algorithm for encoding
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        //return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // commented so we can use our implementaion below
+        return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder(); // our new custom encoder factories (could be useful for scenarios that we need to migrate some of passwords)
 
     }
 
