@@ -1,6 +1,7 @@
 package mjz.ssc.brewery.web.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +14,15 @@ public class PasswordEncodingTests {
 
     private final String PASSWORD = "pass";
 
+
+    @Test
+    void testBcrypt() {
+        //PasswordEncoder bcrypt = new BCryptPasswordEncoder(16); // we can pass the strength by numbers, default no is set to 10, 16 takes longer time generate the hash
+        PasswordEncoder bcrypt = new BCryptPasswordEncoder();
+
+        System.out.println(bcrypt.encode(PASSWORD));
+        System.out.println(bcrypt.encode(PASSWORD));
+    }
 
     @Test
     void testSha256() {

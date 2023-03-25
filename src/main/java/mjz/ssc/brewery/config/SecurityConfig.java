@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
         //return NoOpPasswordEncoder.getInstance();
         //return new LdapShaPasswordEncoder();
-        return new StandardPasswordEncoder();
+        //return new StandardPasswordEncoder(); // Sha256
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -53,7 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .roles("ADMIN")
                 .and() // we can add users in separate auth.inMemoryAuthentication calls or just use .and()
                 .withUser("user")
-                .password("11419772f752d13497f2c5f7b3b98a2fc3def9e154c33099d8111da57c3ba32f6a22e182977c58c9") // Sha256
+                .password("$2a$10$9UsFcx6z3Lv0YHtdLyhgCuT9JrL9W/tMrThFU/RZMQz7ngjqopRiO")
+                //.password("11419772f752d13497f2c5f7b3b98a2fc3def9e154c33099d8111da57c3ba32f6a22e182977c58c9") // Sha256
                 //.password("{SSHA}ikS5HECYlHYK8K4QWFIBzIhOCCxWM8LXOn3rjA==") // for Ldap we use the hashed password
                 //.password("pass") // by adding the passewordEncoder method (Bean), we can remove {noop}
                 //.password("{noop}pass")
