@@ -39,7 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // telling Spring Security to add in this filter in filter chain just before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
-                UsernamePasswordAuthenticationFilter.class);
+                UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable(); // added because the test got failed to invalid CSRF token (spring security by default enables CSRF)
 
         http
                 .authorizeRequests(authorize -> {
