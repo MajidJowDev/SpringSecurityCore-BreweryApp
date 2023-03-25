@@ -3,6 +3,7 @@ package mjz.ssc.brewery.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,7 +31,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic();
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("springuser")
+                .password("{noop}springpass") // we have to define a password encoder for spring security, otherwise we get error (There is no PasswordEncoder mapped for id "null"), here we use the {noop} password encoder
+                .roles("ADMIN")
+                .and() // we can add users in separate auth.inMemoryAuthentication calls or just use .and()
+                .withUser("user")
+                .password("{noop}pass")
+                .roles("USER");
 
+        //auth.inMemoryAuthentication().withUser("springuser").password("springpass").roles("ADMIN");
+        //auth.inMemoryAuthentication().withUser("user").password("pass").roles("USER");
+    }
+
+    /*
+    //However this approach is deprecated
     //this is an in-memory user manager (as a user DAO in spring security context), with this method we can get define and load the user specific data/info into spring context
     @Override
     @Bean
@@ -50,5 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new InMemoryUserDetailsManager(admin, user);
 
     }
+    */
+
 
 }
