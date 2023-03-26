@@ -1,7 +1,9 @@
 package mjz.ssc.brewery.config;
 
+import mjz.ssc.brewery.security.JpaUserDetailsService;
 import mjz.ssc.brewery.security.RestHeaderAuthFilter;
 import mjz.ssc.brewery.security.SfgPasswordEncoderFactories;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -76,8 +78,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //@Autowired
+    //JpaUserDetailsService jpaUserDetailsService;
+    //@Override
+    //protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        //for jpa
+        // with this technique we get our custom UserDetail for authentication
+        // if we had multiple UserDetailsServices we can use the following line
+        // but in this case since we only have one UserDetailService we can comment the below code, because we created
+        // our service as a Spring component, it will be loaded up with password encoders and brought into the context, and
+        // because we do not have other UserDetail services available these are not needed
+       //auth.userDetailsService(this.jpaUserDetailsService).passwordEncoder(passwordEncoder());
+
+        /*
+        // for in-memory authentication we use the below snippet
+
         auth.inMemoryAuthentication()
                 .withUser("springuser")
                 .password("{bcrypt10}$2a$10$v6y.4QbNQs49v1pqa6SHIOEvbq6jwOtnzg7jkQjCXa3zAGQr38bky") // we set the {bcrypt} as prefix from Password encoder factories Id
@@ -96,7 +111,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("ali").password("{ldap}{SSHA}A9Ls+OphDd6LhsUuMvtEm/f0UObWwmY+DsNxOQ==").roles("CUSTOMER"); //we set the {ldap} as prefix from password encoder factories id
         //auth.inMemoryAuthentication().withUser("springuser").password("springpass").roles("ADMIN");
         //auth.inMemoryAuthentication().withUser("user").password("pass").roles("USER");
-    }
+        */
+   // }
 
     /*
     //However this approach is deprecated
