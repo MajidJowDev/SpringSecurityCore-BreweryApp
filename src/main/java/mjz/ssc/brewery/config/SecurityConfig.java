@@ -2,6 +2,7 @@ package mjz.ssc.brewery.config;
 
 import mjz.ssc.brewery.security.JpaUserDetailsService;
 import mjz.ssc.brewery.security.RestHeaderAuthFilter;
+import mjz.ssc.brewery.security.RestUrlAuthFilter;
 import mjz.ssc.brewery.security.SfgPasswordEncoderFactories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,12 +38,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+    // to pass the username and password as params
+    public RestUrlAuthFilter restUrlAuthFilter(AuthenticationManager authenticationManager){
+        RestUrlAuthFilter filter = new RestUrlAuthFilter(new AntPathRequestMatcher("/api/**"));
+        filter.setAuthenticationManager(authenticationManager);
+        return filter;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // telling Spring Security to add in this filter in filter chain just before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable(); // added because the test got failed to invalid CSRF token (spring security by default enables CSRF)
+
+        // to pass the username and password as params
+        http.addFilterBefore(restUrlAuthFilter(authenticationManager()),
+                UsernamePasswordAuthenticationFilter.class);
 
         http
                 .authorizeRequests(authorize -> {
