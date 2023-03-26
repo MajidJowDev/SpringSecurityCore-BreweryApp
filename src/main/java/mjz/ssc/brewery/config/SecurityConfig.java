@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/", "/webjars/**", "/login", "/resources/**" ).permitAll() // by this line we permit all requests, (intercepting authorize request). if we do not add "/webjars/**" and "/login" here the bootstrap scripts in webjars won't be loaded on page (loading will encounter error on browser)
                             .antMatchers("/beers/find", "/beers*").permitAll()
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
+                            .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN") // require ADMIN role on this specific path
                             .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll(); // we do not have the ant matchers wild card, instead we have path param
                 })
                 .authorizeRequests()
