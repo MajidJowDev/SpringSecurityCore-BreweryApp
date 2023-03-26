@@ -64,7 +64,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/beers/find", "/beers*").permitAll()
                             .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
                             .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN") // require ADMIN role on this specific path
-                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll(); // we do not have the ant matchers wild card, instead we have path param
+                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll() // we do not have the ant matchers wild card, instead we have path param
+                            .mvcMatchers("/brewery/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER");
+
                 })
                 .authorizeRequests()
                 .anyRequest().authenticated() // if we want to do exceptions to everything being authenticated, we have to do it before this line (so in this case if we do the antMatchers part after this line we will get an error)
