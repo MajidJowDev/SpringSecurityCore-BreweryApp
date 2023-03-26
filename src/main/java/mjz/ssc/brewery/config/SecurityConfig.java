@@ -75,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("springuser")
-                .password("{bcrypt}$2a$10$v6y.4QbNQs49v1pqa6SHIOEvbq6jwOtnzg7jkQjCXa3zAGQr38bky") // we set the {bcrypt} as prefix from Password encoder factories Id
+                .password("{bcrypt10}$2a$10$v6y.4QbNQs49v1pqa6SHIOEvbq6jwOtnzg7jkQjCXa3zAGQr38bky") // we set the {bcrypt} as prefix from Password encoder factories Id
                 //.password("springpass") // by adding the passewordEncoder method (Bean), we can remove {noop}
                 //.password("{noop}springpass") // we have to define a password encoder for spring security, otherwise we get error (There is no PasswordEncoder mapped for id "null"), here we use the {noop} password encoder
                 .roles("ADMIN")

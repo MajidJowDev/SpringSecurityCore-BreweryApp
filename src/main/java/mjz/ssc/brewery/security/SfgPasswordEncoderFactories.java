@@ -15,9 +15,9 @@ public class SfgPasswordEncoderFactories {
     //we get this snippet originally from Spring main PasswordEncoderFactories
     // so now we set  up our own custom implementation of the Delegating Password Encoder
     public static PasswordEncoder createDelegatingPasswordEncoder() {
-        String encodingId = "bcrypt";
+        String encodingId = "bcrypt10";
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put(encodingId, new BCryptPasswordEncoder());
+        encoders.put(encodingId, new BCryptPasswordEncoder(10));
         encoders.put("ldap", new org.springframework.security.crypto.password.LdapShaPasswordEncoder());
         //encoders.put("MD4", new org.springframework.security.crypto.password.Md4PasswordEncoder());
         //encoders.put("MD5", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("MD5"));

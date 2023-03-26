@@ -11,6 +11,13 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @WebMvcTest
 public class BeerRestControllerIT extends BaseIT {
 
+    @Test
+    void deleteBeerBadCreds() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/beer/97df0c39-90c4-4ae0-b663-453e8e19c311")
+                        .header("Api-Key", "springuser").header("Api-Secret", "asdasdasd"))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
     //testing the filter (not the memory store)
     @Test
     void deleteBeerTest() throws Exception {
