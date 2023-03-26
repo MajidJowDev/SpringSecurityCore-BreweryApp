@@ -20,21 +20,21 @@ public abstract class BaseIT {
     WebApplicationContext wac;
 
     public MockMvc mockMvc;
-
-    @MockBean
-    BeerRepository beerRepository;
-
-    @MockBean
-    BeerInventoryRepository beerInventoryRepository;
-
-    @MockBean
-    BreweryService breweryService;
-
-    @MockBean
-    CustomerRepository customerRepository;
-
-    @MockBean
-    BeerService beerService;
+//commented out because when we want to test form methods, the data does not loaded in database
+//    @MockBean
+//    BeerRepository beerRepository;
+//
+//    @MockBean
+//    BeerInventoryRepository beerInventoryRepository;
+//
+//    @MockBean
+//    BreweryService breweryService;
+//
+//    @MockBean
+//    CustomerRepository customerRepository;
+//
+//    @MockBean
+//    BeerService beerService;
 
     @BeforeEach
     public void setup() {
