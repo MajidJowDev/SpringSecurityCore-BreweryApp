@@ -29,7 +29,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
-@EnableGlobalMethodSecurity(securedEnabled = true) // enable secured annotation
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
