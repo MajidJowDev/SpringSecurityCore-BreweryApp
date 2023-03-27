@@ -20,6 +20,7 @@ package mjz.ssc.brewery.web.controllers;
 import mjz.ssc.brewery.domain.Customer;
 import mjz.ssc.brewery.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,6 +48,7 @@ public class CustomerController {
         return "customers/findCustomers";
     }
 
+    @Secured({"ROLE_ADMIN", "ROLE_CUSTOMER"})
     @GetMapping
     public String processFindFormReturnMany(Customer customer, BindingResult result, Model model){
         // find customers by name
