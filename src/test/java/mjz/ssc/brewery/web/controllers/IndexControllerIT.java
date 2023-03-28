@@ -3,6 +3,7 @@ package mjz.ssc.brewery.web.controllers;
 import mjz.ssc.brewery.repositories.BeerInventoryRepository;
 import mjz.ssc.brewery.repositories.BeerRepository;
 import mjz.ssc.brewery.repositories.CustomerRepository;
+import mjz.ssc.brewery.services.BeerOrderService;
 import mjz.ssc.brewery.services.BeerService;
 import mjz.ssc.brewery.services.BreweryService;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ public class IndexControllerIT extends BaseIT {
 
     @MockBean
     BeerService beerService;
+
+    @MockBean
+    BeerOrderService beerOrderService;
 
     @Test
     void testGetIndexSlash() throws Exception{
