@@ -1,6 +1,7 @@
 package mjz.ssc.brewery.domain.security;
 
 import lombok.*;
+import mjz.ssc.brewery.domain.Customer;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +31,9 @@ public class User implements UserDetails, CredentialsContainer {
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
     private Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.EAGER) // customer has multiple users
+    private Customer customer;
 
     //@Transient //Specifies that the property or field is not persistent
     //private Set<Authority> authorities;
