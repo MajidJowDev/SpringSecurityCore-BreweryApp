@@ -26,7 +26,7 @@ public class User implements UserDetails, CredentialsContainer {
     private String password;
 
     @Singular // (this annotation can only be used with builder pattern) so that in the builder pattern we will have a property by the name authority not authorities
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER) // make sure to set this as EAGER (Because we are going to run this in our context and then we are going to pass it to spring security)
+    @ManyToMany(cascade = {CascadeType.MERGE/*, CascadeType.PERSIST*/}, fetch = FetchType.EAGER) // make sure to set this as EAGER (Because we are going to run this in our context and then we are going to pass it to spring security).... CascadeType.PERSIST removed due to Error "Failed to load ApplicationContext" in bootstrap (and tests)
     @JoinTable(name = "user_role",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
