@@ -102,31 +102,70 @@ public class BeerRestControllerIT extends BaseIT {
         }
     }
 
-    @Test
-    void findBeers() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+    @DisplayName("List Beers")
+    @Nested
+    class ListBeers {
+        @Test
+        void findBeers() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/"))
+                    .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+        }
+
+        @ParameterizedTest(name = "#{index} with [{arguments}]")
+        @MethodSource("mjz.ssc.brewery.web.controllers.BeerControllerIT#getStreamAllUsers")
+        void findBeersAUTH(String user, String pwd) throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/").with(httpBasic(user, pwd)))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        }
     }
 
 
-    @Test
-    void findBeerById() throws Exception {
-        Beer beer = beerRepository.findAll().get(0);
+    @DisplayName("Get Beer By ID")
+    @Nested
+    class GetBeerById {
+        @Test
+        void findBeerById() throws Exception {
+            Beer beer = beerRepository.findAll().get(0);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/" + beer.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/" + beer.getId()))
+                    .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+        }
+
+        @ParameterizedTest(name = "#{index} with [{arguments}]")
+        @MethodSource("mjz.ssc.brewery.web.controllers.BeerControllerIT#getStreamAllUsers")
+        void findBeerByIdAUTH(String user, String pwd) throws Exception {
+            Beer beer = beerRepository.findAll().get(0);
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/" + beer.getId())
+                            .with(httpBasic(user, pwd)))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        }
     }
 
-    @Test
-    void findBeerByUpc() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beerUpc/0631234200036"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+    @Nested
+    @DisplayName("Find By UPC")
+    class FindByUPC {
+        @Test
+        void findBeerByUpc() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beerUpc/0631234200036"))
+                    .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+        }
+
+        @ParameterizedTest(name = "#{index} with [{arguments}]")
+        @MethodSource("mjz.ssc.brewery.web.controllers.BeerControllerIT#getStreamAllUsers")
+        void findBeerByUpcAUTH(String user, String pwd) throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beerUpc/0631234200036")
+                            .with(httpBasic(user, pwd)))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        }
     }
 
-    @Test
-    void findBeerFormADMIN() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/beers").param("beerName", "")
-                .with(httpBasic("springuser", "springpass")))
-                .andExpect(MockMvcResultMatchers.status().isOk());
-    }
+
+        @Test
+        void findBeerFormADMIN() throws Exception {
+            mockMvc.perform(MockMvcRequestBuilders.get("/beers").param("beerName", "")
+                            .with(httpBasic("springuser", "springpass")))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        }
+
 }

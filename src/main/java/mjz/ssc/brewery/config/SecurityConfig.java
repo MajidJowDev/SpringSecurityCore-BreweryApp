@@ -62,13 +62,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests(authorize -> {
                     authorize
                             .antMatchers("/h2-console/**").permitAll() // do not use in production
-                            .antMatchers("/", "/webjars/**", "/login", "/resources/**" ).permitAll() // by this line we permit all requests, (intercepting authorize request). if we do not add "/webjars/**" and "/login" here the bootstrap scripts in webjars won't be loaded on page (loading will encounter error on browser)
-                            .antMatchers("/beers/find", "/beers*").permitAll()
-                            .antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-                            .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN") // require ADMIN role on this specific path
-                            .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll() // we do not have the ant matchers wild card, instead we have path param
-                            .mvcMatchers("/brewery/breweries").hasAnyRole("ADMIN", "CUSTOMER")
-                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER");
+                            .antMatchers("/", "/webjars/**", "/login", "/resources/**" ).permitAll(); // by this line we permit all requests, (intercepting authorize request). if we do not add "/webjars/**" and "/login" here the bootstrap scripts in webjars won't be loaded on page (loading will encounter error on browser)
+                            //.antMatchers("/beers/find", "/beers*").permitAll()
+                            //.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
+                           // .mvcMatchers(HttpMethod.DELETE, "/api/v1/beer/**").hasRole("ADMIN") // require ADMIN role on this specific path
+                           // .mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll() // we do not have the ant matchers wild card, instead we have path param
+                           /* .mvcMatchers("/brewery/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+                            .mvcMatchers(HttpMethod.GET, "/brewery/api/v1/breweries").hasAnyRole("ADMIN", "CUSTOMER")
+                            .mvcMatchers("/beers/find", "beers/{beerId}").hasAnyRole("ADMIN", "CUSTOMER", "USER")
+                            .mvcMatchers(HttpMethod.GET,"/beers/new").hasAnyRole("ADMIN");
+
+                            */
+
+
+
+
 
                 })
                 .authorizeRequests()
