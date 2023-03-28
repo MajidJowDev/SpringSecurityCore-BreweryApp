@@ -1,5 +1,8 @@
 package mjz.ssc.brewery.web.controllers.api;
 
+import mjz.ssc.brewery.security.perms.BeerOrderCreatePermission;
+import mjz.ssc.brewery.security.perms.BeerOrderPickupPermission;
+import mjz.ssc.brewery.security.perms.BeerOrderReadPermission;
 import mjz.ssc.brewery.services.BeerOrderService;
 import mjz.ssc.brewery.web.model.BeerOrderDto;
 import mjz.ssc.brewery.web.model.BeerOrderPagedList;
@@ -23,10 +26,7 @@ public class BeerOrderController {
         this.beerOrderService = beerOrderService;
     }
 
-    @PreAuthorize("hasAuthority('order.read') OR " +
-            " hasAuthority('customer.order.read') AND " +
-            " @beerOrderAuthenticationManager.customerIdMatches(authentication, #customerId)") // name of the bean should start with lowercase, and for referencing the bean we have to use @
-    //authentication tells spring security to provide authentication object into this method
+    @BeerOrderReadPermission
     @GetMapping("orders")
     public BeerOrderPagedList listOrders(@PathVariable("customerId") UUID customerId,
                                          @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -43,20 +43,20 @@ public class BeerOrderController {
         return beerOrderService.listOrders(customerId, PageRequest.of(pageNumber, pageSize));
     }
 
+    @BeerOrderCreatePermission
     @PostMapping("orders")
     @ResponseStatus(HttpStatus.CREATED)
     public BeerOrderDto placeOrder(@PathVariable("customerId") UUID customerId, @RequestBody BeerOrderDto beerOrderDto){
         return beerOrderService.placeOrder(customerId, beerOrderDto);
     }
 
-    @PreAuthorize("hasAuthority('order.read') OR " +
-            " hasAuthority('customer.order.read') AND " +
-            " @beerOrderAuthenticationManager.customerIdMatches(authentication, #customerId)")
+    @BeerOrderReadPermission
     @GetMapping("orders/{orderId}")
     public BeerOrderDto getOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId){
         return beerOrderService.getOrderById(customerId, orderId);
     }
 
+    @BeerOrderPickupPermission
     @PutMapping("/orders/{orderId}/pickup")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void pickupOrder(@PathVariable("customerId") UUID customerId, @PathVariable("orderId") UUID orderId){
