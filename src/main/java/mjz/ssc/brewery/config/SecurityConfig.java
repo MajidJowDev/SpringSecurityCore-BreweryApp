@@ -90,7 +90,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated() // if we want to do exceptions to everything being authenticated, we have to do it before this line (so in this case if we do the antMatchers part after this line we will get an error)
                 .and()
                 .formLogin().and()
-                .httpBasic();
+                .httpBasic()
+                .and().csrf().ignoringAntMatchers("/h2-console/**", "/api/**");
 
         //h2 console config
         http.headers().frameOptions().sameOrigin(); // we added because spring security does not allow frames by default
