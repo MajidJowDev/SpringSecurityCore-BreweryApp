@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -32,6 +33,12 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    //needed for use with Spring Data JPA SPeL
+    //Change the behaviour of API call status from forbidden to not found, it allows spring security be utilized with Spring Data and Spring Expression Language
+    @Bean
+    public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
+        return new SecurityEvaluationContextExtension();
+    }
 
     //Setting up the custom authentication filter
     public RestHeaderAuthFilter restHeaderAuthFilter(AuthenticationManager authenticationManager) { // we can use other types of authentication manager if needed, but here we use in-memory auth manager
