@@ -27,7 +27,8 @@
 <body>
 <h2 th:text="#{welcomemsg}">SFG Brewery Monolith</h2>
 
-<div class="row">
+<!--        if isAuthenticated was false thymeleaf will render the tag-->
+<div class="row" sec:authorize="!isAuthenticated()">
     <div class="col-md-12">
 <!--        this part (Error part) will not work until we configure Spring Security-->
         <p th:if="${loginError}" class="error">Wrong Username or password</p>
@@ -42,10 +43,10 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" sec:authorize="isAuthenticated()">
     <div class="col-md-12">
 <!--        if isAuthenticated was true thymeleaf will render the tag-->
-        <p sec:authorize="isAuthenticated()" th:text="'Welcome: ' + ${#authentication?.principal?.username} ">User</p>
+        <p th:text="'Welcome: ' + ${#authentication?.principal?.username} ">User</p>
         <p><a th:href="@{/logout}">Logout</a></p>
     </div>
 </div>
