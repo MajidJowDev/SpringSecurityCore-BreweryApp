@@ -94,12 +94,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .loginProcessingUrl("/login") // for posting to log in url
                             .loginPage("/").permitAll() // set the address of index page
                             .successForwardUrl("/") // after login forward to this page (in this case again the index page)
-                            .defaultSuccessUrl("/"); // again to the index page
+                            .defaultSuccessUrl("/") // again to the index page
+                            .failureUrl("/?error");
                 })
                 .logout(logoutConfigurer -> {
                     logoutConfigurer
                             .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))  // by default spring security looks for a post for logout (because if we were using javascript we were able to do a post action through java script) and because we are using http href there is really no way in HTTP specification to do a post following a link (links only do GET reqs), so we manually set the logout to GET
-                            .logoutSuccessUrl("/") // to index page
+                            .logoutSuccessUrl("/?logout") // to index page
                             .permitAll();
                 })
                 .httpBasic()

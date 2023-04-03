@@ -31,7 +31,10 @@
 <div class="row" sec:authorize="!isAuthenticated()">
     <div class="col-md-12">
 <!--        this part (Error part) will not work until we configure Spring Security-->
-        <p th:if="${loginError}" class="error">Wrong Username or password</p>
+<!--        <p th:if="${loginError}" class="error">Wrong Username or password</p>-->
+<!--        We can use the param.error because we set the failure url to "/?error" (In security config)-->
+        <div th:if="${param.error}" class="alert alert-danger">Invalid Username or Password</div>
+        <div th:if="${param.logout}" class="alert alert-success">You have Logged out</div>
 <!--        setting up the form to post against login page (this is the default behaviour of spring security)-->
         <form th:action="@{/login}" method="post">
             <label for="username">username:</label>
