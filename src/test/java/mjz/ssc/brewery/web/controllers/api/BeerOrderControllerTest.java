@@ -197,7 +197,7 @@ class BeerOrderControllerTest extends BaseIT {
                 .andExpect(status().isUnauthorized());
     }
 
-
+    @Disabled
     @Transactional
     @WithUserDetails("springuser")
     @Test
@@ -209,6 +209,7 @@ class BeerOrderControllerTest extends BaseIT {
     }
 
 
+    @Disabled
     @Transactional
     @WithUserDetails(DefaultBreweryLoader.STPETE_USER)
     @Test

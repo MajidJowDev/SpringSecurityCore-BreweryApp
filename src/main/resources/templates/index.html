@@ -27,6 +27,21 @@
 
 <div class="row">
     <div class="col-md-12">
+<!--        this part (Error part) will not work until we configure Spring Security-->
+        <p th:if="${loginError}" class="error">Wrong Username or password</p>
+<!--        setting up the form to post against login page (this is the default behaviour of spring security)-->
+        <form th:action="@{/login}" method="post">
+            <label for="username">username:</label>
+            <input type="text" id="username" name="username" autofocus="true" autocomplete="off">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" autofocus="true" autocomplete="off">
+            <input type="submit" value="Log In">
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
         <img class="img-responsive" src="../static/resources/images/brewery.png" th:src="@{/resources/images/brewery.png}"/>
     </div>
 </div>
