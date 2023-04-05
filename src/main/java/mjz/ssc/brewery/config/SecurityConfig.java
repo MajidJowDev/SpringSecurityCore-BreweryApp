@@ -1,5 +1,6 @@
 package mjz.ssc.brewery.config;
 
+import lombok.RequiredArgsConstructor;
 import mjz.ssc.brewery.security.JpaUserDetailsService;
 import mjz.ssc.brewery.security.RestHeaderAuthFilter;
 import mjz.ssc.brewery.security.RestUrlAuthFilter;
@@ -28,10 +29,13 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserDetailsService userDetailsService;
 
     //needed for use with Spring Data JPA SPeL
     //Change the behaviour of API call status from forbidden to not found, it allows spring security be utilized with Spring Data and Spring Expression Language
@@ -80,11 +84,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .mvcMatchers(HttpMethod.GET,"/beers/new").hasAnyRole("ADMIN");
 
                             */
-
-
-
-
-
                 })
                 .authorizeRequests()
                 .anyRequest().authenticated() // if we want to do exceptions to everything being authenticated, we have to do it before this line (so in this case if we do the antMatchers part after this line we will get an error)
@@ -104,7 +103,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .permitAll();
                 })
                 .httpBasic()
-                .and().csrf().ignoringAntMatchers("/h2-console/**", "/api/**");
+                .and().csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
+                .and().rememberMe().key("mjz-key") //the key will be used to hash username, password and expiration time
+                .userDetailsService(userDetailsService);
 
         //h2 console config
         http.headers().frameOptions().sameOrigin(); // we added because spring security does not allow frames by default
