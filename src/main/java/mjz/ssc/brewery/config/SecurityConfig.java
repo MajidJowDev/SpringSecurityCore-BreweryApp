@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -36,6 +37,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final PersistentTokenRepository persistentTokenRepository;
 
     //needed for use with Spring Data JPA SPeL
     //Change the behaviour of API call status from forbidden to not found, it allows spring security be utilized with Spring Data and Spring Expression Language
@@ -104,8 +106,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 })
                 .httpBasic()
                 .and().csrf().ignoringAntMatchers("/h2-console/**", "/api/**")
-                .and().rememberMe().key("mjz-key") //the key will be used to hash username, password and expiration time
-                .userDetailsService(userDetailsService);
+                .and().rememberMe()
+                        .tokenRepository(persistentTokenRepository)
+                        .userDetailsService(userDetailsService);
+                //the below 2 lines are used for implementing "remember-me" feature using simple hash-based toke
+                //.rememberMe().key("mjz-key") //the key will be used to hash username, password and expiration time
+                //.userDetailsService(userDetailsService);
 
         //h2 console config
         http.headers().frameOptions().sameOrigin(); // we added because spring security does not allow frames by default
