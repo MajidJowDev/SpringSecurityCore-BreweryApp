@@ -81,6 +81,14 @@ public class User implements UserDetails, CredentialsContainer {
     @Builder.Default
     private boolean enabled = true;
 
+    @Builder.Default
+    private Boolean useGoogle2fa = false;
+
+    private String google2faSecret;
+
+    @Transient // so the value will not persist in database
+    private Boolean google2faRequired = true; // after we went through the 2fa process we will set this to false
+
     @Override
     public void eraseCredentials() {
         this.password = null;
