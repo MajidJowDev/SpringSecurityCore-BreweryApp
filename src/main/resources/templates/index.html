@@ -33,7 +33,13 @@
 <!--        this part (Error part) will not work until we configure Spring Security-->
 <!--        <p th:if="${loginError}" class="error">Wrong Username or password</p>-->
 <!--        We can use the param.error because we set the failure url to "/?error" (In security config)-->
-        <div th:if="${param.error}" class="alert alert-danger">Invalid Username or Password</div>
+<!--        <div th:if="${param.error}" class="alert alert-danger">Invalid Username or Password</div>-->
+        <div th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message} == 'Bad credentials'" class="alert alert-danger">Invalid Username or Password</div>
+
+<!--        Spring security uses the class "SimpleUrlAuthenticationFailureHandler" when there is an exception and we get
+the exception value (last exception prop name) from there-->
+        <div th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message} == 'User account is locked'" class="alert alert-danger">User Account is Locked</div>
+
         <div th:if="${param.logout}" class="alert alert-success">You have Logged out</div>
 <!--        setting up the form to post against login page (this is the default behaviour of spring security)-->
         <form th:action="@{/login}" method="post">
@@ -56,6 +62,8 @@
         <p><a th:href="@{/logout}">Logout</a></p>
     </div>
 </div>
+
+<!--<h2 th:text="${session['SPRING_SECURITY_LAST_EXCEPTION']?.message}"></h2>-->
 
 <div class="row">
     <div class="col-md-12">
