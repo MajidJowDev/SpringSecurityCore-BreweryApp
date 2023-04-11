@@ -1,6 +1,6 @@
 package mjz.ssc.brewery.security.google;
 
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import mjz.ssc.brewery.domain.security.User;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -20,11 +20,11 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class Google2faFilter extends GenericFilterBean {
 
     // we need to use the new impl, because it's not normally in spring context
     private final AuthenticationTrustResolver authenticationTrustResolver = new AuthenticationTrustResolverImpl(); // for checking if the authentication is not anonymous
+    private final Google2faFailureHandler google2faFailureHandler = new Google2faFailureHandler();
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
@@ -43,7 +43,7 @@ public class Google2faFilter extends GenericFilterBean {
                 if(user.getUseGoogle2fa() && user.getGoogle2faRequired()) {
                     log.debug("2FA Required");
 
-                    //todo - add failure handler
+                    google2faFailureHandler.onAuthenticationFailure(request, response, null);
                 }
             }
         }
