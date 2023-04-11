@@ -57,11 +57,27 @@ public class UserController {
             // bad code
             return "user/register2fa";
         }
+    }
 
+    @GetMapping("/verify2fa")
+    public String verify2fa() {
+        return "user/verify2fa";
+    }
+
+    @PostMapping
+    public String verifyPostOf2fa(@RequestParam Integer verifyCode) {
+        User user = getUser();
+
+        if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) {
+            ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).setGoogle2faRequired(false);
+            return "/index";
+        } else {
+            return "user/verify2fa";
+        }
 
     }
 
-    // since we are authenticated by username and password in first step, so we have the user on the spring security context, and we can access it
+        // since we are authenticated by username and password in first step, so we have the user on the spring security context, and we can access it
     private static User getUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
