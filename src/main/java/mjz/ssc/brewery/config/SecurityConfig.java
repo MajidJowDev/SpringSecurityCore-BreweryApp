@@ -5,6 +5,7 @@ import mjz.ssc.brewery.security.JpaUserDetailsService;
 import mjz.ssc.brewery.security.RestHeaderAuthFilter;
 import mjz.ssc.brewery.security.RestUrlAuthFilter;
 import mjz.ssc.brewery.security.SfgPasswordEncoderFactories;
+import mjz.ssc.brewery.security.google.Google2faFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,7 @@ import org.springframework.security.data.repository.query.SecurityEvaluationCont
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -38,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final PersistentTokenRepository persistentTokenRepository;
+    private final Google2faFilter google2faFilter;
 
     //needed for use with Spring Data JPA SPeL
     //Change the behaviour of API call status from forbidden to not found, it allows spring security be utilized with Spring Data and Spring Expression Language
@@ -62,6 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        // we want the username and password filter to run, we want to make sure if the session is logged in
+        http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
+
+
         // telling Spring Security to add in this filter in filter chain just before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class)

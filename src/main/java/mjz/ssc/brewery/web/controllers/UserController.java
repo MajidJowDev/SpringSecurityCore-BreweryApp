@@ -39,7 +39,7 @@ public class UserController {
         return "user/register2fa";
     }
 
-    @PostMapping//("/register2fa")
+    @PostMapping("/register2fa")
     public String confirm2fa(@RequestParam Integer verifyCode) { // the param name must be equal to the html form element Id
 
         User user = getUser();
@@ -64,7 +64,7 @@ public class UserController {
         return "user/verify2fa";
     }
 
-    @PostMapping
+    @PostMapping("/verify2fa")
     public String verifyPostOf2fa(@RequestParam Integer verifyCode) {
         User user = getUser();
 
