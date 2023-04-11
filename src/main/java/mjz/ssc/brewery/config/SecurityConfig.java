@@ -33,9 +33,9 @@ import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
-//@Configuration
-//@EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
-//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
+@Configuration
+@EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(restUrlAuthFilter(authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class);
 
-        http
+        http.cors().and()
                 .authorizeRequests(authorize -> {
                     authorize
                             .antMatchers("/h2-console/**").permitAll() // do not use in production
