@@ -39,16 +39,31 @@ public class UserController {
         return "user/register2fa";
     }
 
-    // since we are authenticated by username and password in first step, so we have the user on the spring security context, and we can access it
-    private static User getUser() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
     @PostMapping//("/register2fa")
     public String confirm2fa(@RequestParam Integer verifyCode) { // the param name must be equal to the html form element Id
 
-        //todo - implement
-        return "index";
+        User user = getUser();
+
+        log.debug("Entered Code is: " + verifyCode );
+
+        if(googleAuthenticator.authorizeUser(user.getUsername(), verifyCode)) { // gets the shared secret from database and verify the code with that
+
+            User savedUser = userRepository.findById(user.getId()).orElseThrow();
+            savedUser.setUseGoogle2fa(true); // the user completed registration for 2fa
+            userRepository.save(savedUser);
+
+            return "index";
+        } else {
+            // bad code
+            return "user/register2fa";
+        }
+
+
+    }
+
+    // since we are authenticated by username and password in first step, so we have the user on the spring security context, and we can access it
+    private static User getUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 }
