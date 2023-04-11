@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 @RestController
@@ -127,6 +128,7 @@ public class BeerRestController {
     }
 
     //@PreAuthorize("hasAnyAuthority('beer.delete')")
+    //@CrossOrigin // similar to what we done in WebConfig about mappings
     @BeerDeletePermission
     @DeleteMapping({"beer/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
