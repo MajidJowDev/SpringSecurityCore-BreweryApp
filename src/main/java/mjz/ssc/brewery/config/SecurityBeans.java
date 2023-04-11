@@ -3,11 +3,13 @@ package mjz.ssc.brewery.config;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 import com.warrenstrange.googleauth.ICredentialRepository;
+import mjz.ssc.brewery.security.SfgPasswordEncoderFactories;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -16,6 +18,21 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class SecurityBeans {
+
+    @Bean
+    PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
+        //return NoOpPasswordEncoder.getInstance();
+        //return new LdapShaPasswordEncoder();
+        //return new StandardPasswordEncoder(); // Sha256
+        //return new BCryptPasswordEncoder();
+
+        // we can use Delegating Password encoder to use different password encoding methods
+        // This way we can set a key for passowrds, so we can tell spring which encoding is going to work for each specific user
+        //we can also define our algorithm for encoding
+        //return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // commented so we can use our implementaion below
+        return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder(); // our new custom encoder factories (could be useful for scenarios that we need to migrate some of passwords)
+
+    }
 
     @Bean
     public GoogleAuthenticator googleAuthenticator(ICredentialRepository credentialRepository){

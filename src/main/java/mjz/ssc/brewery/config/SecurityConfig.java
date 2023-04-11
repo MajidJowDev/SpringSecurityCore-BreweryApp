@@ -33,9 +33,9 @@ import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
-@Configuration
-@EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
+//@Configuration
+//@EnableWebSecurity  //Because spring security auto-configuration may not find everything on classpath, so it would use conditionals, we can add the security configs here
+//@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true) // enable secured annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
@@ -125,20 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().sameOrigin(); // we added because spring security does not allow frames by default
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() { // by adding this, we can remove the {noop} from passwords in configure method
-        //return NoOpPasswordEncoder.getInstance();
-        //return new LdapShaPasswordEncoder();
-        //return new StandardPasswordEncoder(); // Sha256
-        //return new BCryptPasswordEncoder();
 
-        // we can use Delegating Password encoder to use different password encoding methods
-        // This way we can set a key for passowrds, so we can tell spring which encoding is going to work for each specific user
-        //we can also define our algorithm for encoding
-        //return PasswordEncoderFactories.createDelegatingPasswordEncoder(); // commented so we can use our implementaion below
-        return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder(); // our new custom encoder factories (could be useful for scenarios that we need to migrate some of passwords)
-
-    }
 
     //@Autowired
     //JpaUserDetailsService jpaUserDetailsService;
